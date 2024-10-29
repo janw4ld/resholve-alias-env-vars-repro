@@ -26,11 +26,18 @@
             inherit pname;
             version = "0.1.0";
             src = pkgs.writeText "demo-bash-script" ''
+              shopt -s expand_aliases
+
+              # this parses and runs correctly
+              alias ssh_prod='cd $(AWS_REGION=us-east-1 echo $PWD)'
+              ssh_prod
+
+              # this fails to parse
               alias ls_use1='AWS_REGION=us-east-1 ls'
               ls_use1
             '';
             solutions.default = {
-              interpreter = pkgs.lib.getExe pkgs.bash;
+              interpreter = pkgs.lib.getExe pkgs.bashInteractive;
               scripts = [execPath];
               inputs = [];
               fix.aliases = true;
